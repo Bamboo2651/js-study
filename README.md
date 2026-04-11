@@ -60,7 +60,9 @@
 js-study/
 ├── README.md
 ├── step01-basics/
-│   └── notes.md
+│   ├── notes.md
+│   ├── index.html
+│   └── main.js
 ├── step02-dom/
 │   └── notes.md
 ├── step03-array-object/
