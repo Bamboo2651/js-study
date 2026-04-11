@@ -1,12 +1,18 @@
-const score = 85;
+const scores = [85, 42, 90, 61, 78]
 
-if (score >= 90) {
-  console.log("優");
-} else if (score >= 70) {
-  console.log("良");
-} else {
-  console.log("可");
+const myFunc = (score) => {
+    if (score >= 90) {
+        console.log(score + "点 → 優");
+    } else if (score >= 70) {
+        console.log(score + "点 → 良");
+    } else if (score >= 60) {
+        console.log(score + "点 → 可");
+    } else {
+        console.log(score + "点 → 不可");
+    }
 }
 
-const result = score >= 70 ? "合格" : "不合格";
-console.log(result);
+
+for (let score of scores) {
+    myFunc(score)
+}
