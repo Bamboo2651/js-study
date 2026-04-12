@@ -1,3 +1,4 @@
+// map
 const names = ["alice", "bob", "charlie"];
 const doubled = names.map(function (num) {
     return num.toUpperCase()
