@@ -9,7 +9,7 @@
 ## 📍 現在地・進捗
 
 - [x] **Step 1** - JS基礎構文
-- [ ] **Step 2** - DOM操作 & イベント
+- [x] **Step 2** - DOM操作 & イベント
 - [ ] **Step 3** - 配列・オブジェクト操作
 - [ ] **🎯 ミニ成果物①** - ToDoリスト（JS単体）
 - [ ] **Step 4** - 非同期処理
@@ -64,7 +64,9 @@ js-study/
 │   ├── index.html
 │   └── main.js
 ├── step02-dom/
-│   └── notes.md
+│   ├── notes.md
+│   ├── index.html
+│   └── main.js
 ├── step03-array-object/
 │   └── notes.md
 ├── mini01-todo/
