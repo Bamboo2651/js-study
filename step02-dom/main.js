@@ -3,5 +3,11 @@ const message = document.querySelector("#message");
 const btn = document.querySelector("#btn");
 
 btn.addEventListener("click", function () {
-    message.textContent("さようなら")
+    message.textContent = "さようなら"
+})
+
+const inputText = document.querySelector("#inputText");
+const outText = document.querySelector("#outText");
+inputText.addEventListener("input", function () {
+    outText.textContent = inputText.value
 })
