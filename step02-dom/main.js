@@ -11,3 +11,9 @@ const outText = document.querySelector("#outText");
 inputText.addEventListener("input", function () {
     outText.textContent = inputText.value
 })
+
+
+const colorbtn = document.querySelector("#colorbtn");
+colorbtn.addEventListener("click", function () {
+    message.classList.toggle("red");
+})
