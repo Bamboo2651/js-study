@@ -84,6 +84,31 @@ const result = users.find(function(user) {
 
 ---
 
+### スプレッド構文 — 配列を展開・コピーする
+
+`...` を使って配列の中身を展開できる。
+
+```javascript
+// 2つの配列を合体
+const a = [1, 2, 3];
+const b = [4, 5, 6];
+const combined = [...a, ...b]; // → [1, 2, 3, 4, 5, 6]
+```
+
+配列の独立したコピーを作るときにも使う。
+
+```javascript
+// ❌ これはコピーじゃなく同じものを参照している
+const copy = original;
+
+// ✅ スプレッドで新しい配列として独立したコピー
+const copy = [...original];
+```
+
+> ToDoリストなどで「リストに追加した新しい配列を作る」ときによく使うパターン。
+
+---
+
 ### ⚠️ ハマりポイント
 
 ```javascript
