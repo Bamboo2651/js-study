@@ -20,4 +20,8 @@ push.addEventListener("click", function () {
     deleteBtn.addEventListener("click", function () {
         ul.removeChild(li)
     })
+
+    li.addEventListener("click", function () {
+        li.classList.toggle("done")
+    })
 })
