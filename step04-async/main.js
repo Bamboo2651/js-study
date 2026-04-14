@@ -30,18 +30,43 @@
 
 
 
-function データを取得する() {
-    return new Promise(function (resolve) {
+// function データを取得する() {
+//     return new Promise(function (resolve) {
+//         setTimeout(function () {
+//             resolve("取得したデータ");
+//         }, 1000);
+//     });
+// }
+
+// async function main() {
+//     console.log("取得中...");
+//     const result = await データを取得する();
+//     console.log(result);
+// }
+
+// main();
+
+
+
+function データを取得する(成功する) {
+    return new Promise(function (resolve, reject) {
         setTimeout(function () {
-            resolve("取得したデータ");
+            if (成功する) {
+                resolve("取得成功！");
+            } else {
+                reject("取得失敗...");
+            }
         }, 1000);
     });
 }
 
 async function main() {
-    console.log("取得中...");
-    const result = await データを取得する();
-    console.log(result);
+    try {
+        const result = await データを取得する(false); // ← falseで失敗させる
+        console.log(result);
+    } catch (error) {
+        console.log("エラー：", error);
+    }
 }
 
 main();
