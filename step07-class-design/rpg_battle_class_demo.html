@@ -1,0 +1,306 @@
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: var(--font-sans);
+    }
+
+    .arena {
+        padding: 1rem 0;
+    }
+
+    .fighters {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        gap: 1rem;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .fighter {
+        background: var(--color-background-primary);
+        border: 0.5px solid var(--color-border-tertiary);
+        border-radius: var(--border-radius-lg);
+        padding: 1rem;
+    }
+
+    .fighter-name {
+        font-size: 15px;
+        font-weight: 500;
+        margin-bottom: 8px;
+    }
+
+    .hp-label {
+        font-size: 12px;
+        color: var(--color-text-secondary);
+        margin-bottom: 4px;
+    }
+
+    .hp-bar-bg {
+        background: var(--color-background-secondary);
+        border-radius: 4px;
+        height: 10px;
+        overflow: hidden;
+        margin-bottom: 6px;
+    }
+
+    .hp-bar {
+        height: 100%;
+        border-radius: 4px;
+        transition: width 0.4s ease;
+    }
+
+    .hp-hero {
+        background: #1D9E75;
+    }
+
+    .hp-enemy {
+        background: #E24B4A;
+    }
+
+    .hp-num {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--color-text-secondary);
+    }
+
+    .vs {
+        font-size: 18px;
+        font-weight: 500;
+        color: var(--color-text-secondary);
+        text-align: center;
+    }
+
+    .avatar {
+        font-size: 32px;
+        text-align: center;
+        margin-bottom: 8px;
+    }
+
+    .actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+    }
+
+    .log {
+        background: var(--color-background-secondary);
+        border-radius: var(--border-radius-md);
+        padding: 12px;
+        min-height: 80px;
+        font-size: 13px;
+        line-height: 1.7;
+        color: var(--color-text-secondary);
+    }
+
+    .log p {
+        margin-bottom: 2px;
+    }
+
+    .tag {
+        display: inline-block;
+        font-size: 11px;
+        padding: 2px 8px;
+        border-radius: var(--border-radius-md);
+        margin-bottom: 8px;
+    }
+
+    .tag-hero {
+        background: #E1F5EE;
+        color: #0F6E56;
+    }
+
+    .tag-enemy {
+        background: #FCEBEB;
+        color: #A32D2D;
+    }
+
+    .restart {
+        margin-top: 12px;
+        width: 100%;
+    }
+</style>
+
+<div class="arena">
+    <h2 class="sr-only">RPGバトルデモ — classの継承・カプセル化を体験できるゲーム</h2>
+    <div class="fighters">
+        <div class="fighter">
+            <div class="avatar">🧙</div>
+            <div class="tag tag-hero">Hero</div>
+            <div class="fighter-name" id="hero-name">勇者</div>
+            <div class="hp-label">HP</div>
+            <div class="hp-bar-bg">
+                <div class="hp-bar hp-hero" id="hero-bar" style="width:100%"></div>
+            </div>
+            <div class="hp-num"><span id="hero-hp">100</span> / <span id="hero-maxhp">100</span></div>
+            <div style="font-size:12px;color:var(--color-text-secondary);margin-top:6px;">MP: <span
+                    id="hero-mp">30</span></div>
+        </div>
+        <div class="vs">VS</div>
+        <div class="fighter">
+            <div class="avatar">🐉</div>
+            <div class="tag tag-enemy">Enemy</div>
+            <div class="fighter-name" id="enemy-name">ドラゴン</div>
+            <div class="hp-label">HP</div>
+            <div class="hp-bar-bg">
+                <div class="hp-bar hp-enemy" id="enemy-bar" style="width:100%"></div>
+            </div>
+            <div class="hp-num"><span id="enemy-hp">80</span> / <span id="enemy-maxhp">80</span></div>
+        </div>
+    </div>
+    <div class="actions" id="actions">
+        <button onclick="act('attack')">⚔️ 攻撃</button>
+        <button onclick="act('magic')">✨ 魔法（MP10）</button>
+        <button onclick="act('heal')">💊 回復（MP5）</button>
+        <button onclick="act('defend')">🛡️ 防御</button>
+    </div>
+    <div class="log" id="log">
+        <p>バトル開始！</p>
+    </div>
+    <button class="restart" id="restart-btn" style="display:none" onclick="restart()">↺ もう一度</button>
+</div>
+
+<script>
+    class Character {
+        #hp; #maxHp;
+        constructor(name, hp, atk, def) {
+            this.name = name;
+            this.#maxHp = hp;
+            this.#hp = hp;
+            this.atk = atk;
+            this.def = def;
+        }
+        get hp() { return this.#hp; }
+        get maxHp() { return this.#maxHp; }
+        get isAlive() { return this.#hp > 0; }
+        takeDamage(dmg) {
+            const actual = Math.max(1, dmg - this.def);
+            this.#hp = Math.max(0, this.#hp - actual);
+            return actual;
+        }
+        heal(amount) {
+            this.#hp = Math.min(this.#maxHp, this.#hp + amount);
+        }
+    }
+
+    class Hero extends Character {
+        constructor() {
+            super('勇者', 100, 18, 5);
+            this.mp = 30;
+        }
+        magic() {
+            if (this.mp < 10) return null;
+            this.mp -= 10;
+            return Math.floor(this.atk * 1.8);
+        }
+        healSelf() {
+            if (this.mp < 5) return 0;
+            this.mp -= 5;
+            const h = 25;
+            this.heal(h);
+            return h;
+        }
+    }
+
+    class Enemy extends Character {
+        constructor() { super('ドラゴン', 80, 14, 3); }
+        chooseAction() {
+            return Math.random() < 0.3 ? 'heavy' : 'normal';
+        }
+    }
+
+    let hero, enemy, defending;
+    function init() {
+        hero = new Hero();
+        enemy = new Enemy();
+        defending = false;
+    }
+    init();
+
+    function updateUI() {
+        document.getElementById('hero-hp').textContent = hero.hp;
+        document.getElementById('hero-maxhp').textContent = hero.maxHp;
+        document.getElementById('hero-mp').textContent = hero.mp;
+        document.getElementById('hero-bar').style.width = (hero.hp / hero.maxHp * 100) + '%';
+        document.getElementById('enemy-hp').textContent = enemy.hp;
+        document.getElementById('enemy-maxhp').textContent = enemy.maxHp;
+        document.getElementById('enemy-bar').style.width = (enemy.hp / enemy.maxHp * 100) + '%';
+    }
+
+    function addLog(msg) {
+        const log = document.getElementById('log');
+        const p = document.createElement('p');
+        p.textContent = msg;
+        log.appendChild(p);
+        log.scrollTop = log.scrollHeight;
+    }
+
+    function endGame(won) {
+        document.getElementById('actions').style.display = 'none';
+        document.getElementById('restart-btn').style.display = 'block';
+        addLog(won ? '🎉 勝利！ドラゴンを倒した！' : '💀 敗北...勇者は力尽きた');
+    }
+
+    function enemyTurn() {
+        const action = enemy.chooseAction();
+        let dmg, def = defending ? hero.def + 8 : hero.def;
+        if (action === 'heavy') {
+            const raw = Math.floor(enemy.atk * 1.6);
+            const actual = Math.max(1, raw - def);
+            dmg = actual;
+            hero.takeDamage(raw - enemy.atk + hero.def); // re-calc with modified def via direct
+            // recalc properly
+            const realDef = defending ? hero.def + 8 : hero.def;
+            const realDmg = Math.max(1, Math.floor(enemy.atk * 1.6) - realDef);
+            hero.takeDamage(Math.floor(enemy.atk * 1.6) - realDef + realDef);
+            addLog(`🐉 ドラゴンの強攻撃！ ${realDmg} ダメージ${defending ? '（防御で軽減）' : ''}`);
+        } else {
+            const realDef = defending ? hero.def + 8 : hero.def;
+            const realDmg = Math.max(1, enemy.atk - realDef);
+            hero.takeDamage(enemy.atk);
+            addLog(`🐉 ドラゴンの攻撃！ ${realDmg} ダメージ${defending ? '（防御で軽減）' : ''}`);
+        }
+        defending = false;
+    }
+
+    function act(type) {
+        defending = false;
+        if (type === 'attack') {
+            const dmg = enemy.takeDamage(hero.atk);
+            addLog(`⚔️ 攻撃！ ${dmg} ダメージ`);
+        } else if (type === 'magic') {
+            const power = hero.magic();
+            if (!power) { addLog('MPが足りない！'); return; }
+            const dmg = enemy.takeDamage(power);
+            addLog(`✨ 魔法！ ${dmg} ダメージ（MP-10）`);
+        } else if (type === 'heal') {
+            const h = hero.healSelf();
+            if (!h) { addLog('MPが足りない！'); return; }
+            addLog(`💊 HP +${h} 回復（MP-5）`);
+        } else if (type === 'defend') {
+            defending = true;
+            addLog('🛡️ 防御態勢！次の敵攻撃を軽減');
+        }
+        updateUI();
+        if (!enemy.isAlive) { updateUI(); endGame(true); return; }
+        setTimeout(() => {
+            enemyTurn();
+            updateUI();
+            if (!hero.isAlive) { endGame(false); }
+        }, 600);
+    }
+
+    function restart() {
+        init();
+        updateUI();
+        document.getElementById('log').innerHTML = '<p>バトル開始！</p>';
+        document.getElementById('actions').style.display = 'flex';
+        document.getElementById('restart-btn').style.display = 'none';
+    }
+    updateUI();
+</script>
